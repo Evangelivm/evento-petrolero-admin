@@ -136,7 +136,7 @@ export default function LoginPage() {
         </CardContent>
         <CardFooter className="flex justify-center">
           <Link
-            href="/evento"
+            href="https://reactivapetroltalara.online/"
             className="text-sm text-amber-600 hover:text-amber-800"
           >
             Ver sitio web del evento →

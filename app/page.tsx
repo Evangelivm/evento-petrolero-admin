@@ -1,43 +1,50 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { AlertCircle, Eye, EyeOff, LogIn } from "lucide-react"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { AlertCircle, Eye, EyeOff, LogIn } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
     // Credenciales hardcodeadas para demo
     if (username === "admin" && password === "admin123") {
       // Guardar estado de autenticación
-      localStorage.setItem("admin_authenticated", "true")
+      localStorage.setItem("admin_authenticated", "true");
       // Redireccionar al dashboard
       setTimeout(() => {
-        router.push("/admin")
-      }, 1000)
+        router.push("/admin");
+      }, 1000);
     } else {
-      setError("Usuario o contraseña incorrectos")
-      setLoading(false)
+      setError("Usuario o contraseña incorrectos");
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div
@@ -49,10 +56,18 @@ export default function LoginPage() {
       <Card className="w-[380px] bg-white/90 backdrop-blur-md z-10">
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4">
-            <img src="/petro-summit-logo.png" alt="PetroSummit 2025" className="h-16" />
+            <img
+              src="/petro-summit-logo.png"
+              alt="PetroSummit 2025"
+              className="h-16"
+            />
           </div>
-          <CardTitle className="text-2xl text-center font-bold">Acceso Administrativo</CardTitle>
-          <CardDescription className="text-center">PetroSummit 2025 - Panel de Control</CardDescription>
+          <CardTitle className="text-2xl text-center font-bold">
+            Acceso Administrativo
+          </CardTitle>
+          <CardDescription className="text-center">
+            PetroSummit 2025 - Panel de Control
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {error && (
@@ -92,7 +107,11 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
-            <Button type="submit" className="w-full bg-amber-600 hover:bg-amber-700" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full bg-amber-600 hover:bg-amber-700"
+              disabled={loading}
+            >
               {loading ? (
                 <>
                   <span className="animate-spin mr-2">⏳</span>
@@ -107,20 +126,23 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="text-xs text-center text-gray-500 mt-2">
+          {/* <div className="text-xs text-center text-gray-500 mt-2">
             <p>Credenciales de demostración:</p>
             <p>
               Usuario: <span className="font-mono">admin</span> | Contraseña:{" "}
               <span className="font-mono">admin123</span>
             </p>
-          </div>
+          </div> */}
         </CardContent>
         <CardFooter className="flex justify-center">
-          <Link href="/evento" className="text-sm text-amber-600 hover:text-amber-800">
+          <Link
+            href="/evento"
+            className="text-sm text-amber-600 hover:text-amber-800"
+          >
             Ver sitio web del evento →
           </Link>
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }

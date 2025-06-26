@@ -657,6 +657,7 @@ export default function InscripcionesPage() {
                       <TableHead>Código</TableHead>
                       <TableHead>Nombre / Empresa</TableHead>
                       <TableHead>Correo</TableHead>
+                      <TableHead>Telefono</TableHead>
                       <TableHead>Tipo de Pase</TableHead>
                       <TableHead>Estado</TableHead>
                       <TableHead>Estado de Inscripción</TableHead>
@@ -673,6 +674,7 @@ export default function InscripcionesPage() {
                           {capitalizeWords(inscripcion.nombre)}
                         </TableCell>
                         <TableCell>{inscripcion.email}</TableCell>
+                        <TableCell>{inscripcion.telefono}</TableCell>
                         <TableCell>
                           {formatTipoParticipante(
                             inscripcion.tipo_participante
@@ -778,30 +780,38 @@ export default function InscripcionesPage() {
                             inscripcion.estado_pago,
                             inscripcion.correo_enviado
                           ) === "email_enviado" && (
-                            <div className="grid grid-cols-2 gap-1 mt-1">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() =>
-                                  generateAndDownloadPDF(inscripcion)
-                                }
-                                title="Descargar PDF Completo"
-                                className="px-1 py-0.5 text-xs"
-                              >
-                                <FileText className="mr-1 h-3 w-3" />
-                                PDF Completo
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleDownloadPDF(inscripcion)}
-                                title="Descargar PDF Tarjeta"
-                                className="px-1 py-0.5 text-xs"
-                              >
-                                <Download className="mr-1 h-3 w-3" />
-                                PDF Tarjeta
-                              </Button>
-                            </div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="px-2 py-0.5 text-xs"
+                                >
+                                  <Download className="mr-1 h-3 w-3" />
+                                  Descargar
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuCheckboxItem
+                                  checked={false}
+                                  onCheckedChange={() =>
+                                    generateAndDownloadPDF(inscripcion)
+                                  }
+                                >
+                                  <FileText className="mr-2 h-3 w-3" />
+                                  PDF Completo
+                                </DropdownMenuCheckboxItem>
+                                <DropdownMenuCheckboxItem
+                                  checked={false}
+                                  onCheckedChange={() =>
+                                    handleDownloadPDF(inscripcion)
+                                  }
+                                >
+                                  <Download className="mr-2 h-3 w-3" />
+                                  PDF Tarjeta
+                                </DropdownMenuCheckboxItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           )}
                         </TableCell>
                       </TableRow>

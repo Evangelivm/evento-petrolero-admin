@@ -11,11 +11,11 @@ pipeline {
 
                 echo 'Verificando archivo .env...'
                 sh '''
-                if [ ! -f /var/jenkins_home/workspace/evento-petrolero-admin/.env ]; then
-                  echo "Copiando .env desde /var/jenkins_home/envs/evento-petrolero-admin.env"
-                  cp /var/jenkins_home/envs/evento-petrolero-admin.env /var/jenkins_home/workspace/evento-petrolero-admin/.env
+                if [ -f /var/jenkins_home/workspace/evento-petrolero-admin/.env ]; then
+                  echo ".env encontrado"
                 else
-                  echo ".env ya existe"
+                  echo "ERROR: .env no encontrado en el workspace"
+                  exit 1
                 fi
                 '''
 

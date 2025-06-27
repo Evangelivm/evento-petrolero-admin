@@ -18,12 +18,23 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
+# ==== Nueva sección: Args para variables de entorno ====
+ARG BREVO_API_KEY
+ARG MAIL_NAME
+ARG MAIL_SUBJECT
+ARG NEXT_PUBLIC_API_URL
 
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Inyectar variables de entorno durante el build
+ENV BREVO_API_KEY=${BREVO_API_KEY}
+ENV MAIL_NAME=${MAIL_NAME}
+ENV MAIL_SUBJECT=${MAIL_SUBJECT}
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
 # Enable standalone output in next.config.js
 RUN sed -i 's/\/\/\s*output: "standalone"/output: "standalone"/' next.config.mjs

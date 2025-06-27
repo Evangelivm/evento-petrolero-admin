@@ -3,12 +3,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - BREVO_API_KEY=${BREVO_API_KEY}
+        - MAIL_NAME=${MAIL_NAME}
+        - MAIL_SUBJECT=${MAIL_SUBJECT}
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     ports:
-      - "3002:3002" # El puerto interno de tu contenedor
+      - "3002:3002"
     environment:
       NODE_ENV: production
       PORT: 3002
       HOSTNAME: 0.0.0.0
+      # Variables adicionales para runtime
+      BREVO_API_KEY: ${BREVO_API_KEY}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
     restart: unless-stopped
     networks:
       - shared_network

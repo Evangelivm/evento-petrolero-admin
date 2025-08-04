@@ -56,7 +56,15 @@ interface Payment {
   estado_pago: "CONFIRMADO" | "PENDIENTE" | "RECHAZADO";
   fecha_registro: string;
   comprobante?: string | null;
+  dias?: string;
 }
+
+const GRATIS_TYPES = [
+  "AUSPICIADOR",
+  "AUTORIDAD",
+  "MEDIA_PARTNER",
+  "ALUMNO_UNIVERSITARIO",
+];
 
 export default function PagosPage() {
   const router = useRouter();
@@ -86,13 +94,9 @@ export default function PagosPage() {
 
   const handleDialogClose = (open: boolean) => {
     setIsDetailOpen(open);
-    if (!open) {
-      // Refrescar pagos cuando se cierra el diálogo después de una acción
-      fetchPagos();
-    }
+    if (!open) fetchPagos();
   };
 
-  // Filtrar pagos según los criterios
   const filteredPayments = pagosData.filter((pago) => {
     const matchesSearch =
       searchQuery === "" ||
@@ -101,59 +105,51 @@ export default function PagosPage() {
       pago.codigo.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesStatus =
-      statusFilter.length === 0 || statusFilter.includes(pago.estado_pago);
+      statusFilter.length === 0 ||
+      statusFilter.includes(pago.estado_pago.toLowerCase());
 
     const matchesMethod =
       methodFilter === "" ||
       methodFilter.toLowerCase() === "todos" ||
-      pago.metodo_pago.toLowerCase() === methodFilter.toLowerCase();
+      (GRATIS_TYPES.includes(pago.tipo_participante)
+        ? "gratis"
+        : pago.metodo_pago.toLowerCase()) === methodFilter.toLowerCase();
 
     return matchesSearch && matchesStatus && matchesMethod;
   });
 
-  // Estadísticas de pagos
   const totalPagos = pagosData.length;
   const pagosPendientes = pagosData.filter(
-    (pago) => pago.estado_pago === "PENDIENTE"
+    (p) => p.estado_pago === "PENDIENTE"
   ).length;
   const pagosCompletados = pagosData.filter(
-    (pago) => pago.estado_pago === "CONFIRMADO"
+    (p) => p.estado_pago === "CONFIRMADO"
   ).length;
   const montoTotal = pagosData
-    .filter((pago) => pago.estado_pago === "CONFIRMADO")
-    .reduce((sum, pago) => sum + Number(pago.monto || 0), 0);
+    .filter((p) => p.estado_pago === "CONFIRMADO")
+    .reduce((sum, p) => sum + Number(p.monto || 0), 0);
 
-  // Formatear fecha
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("es-ES", {
+  const formatDate = (dateString: string) =>
+    new Intl.DateTimeFormat("es-ES", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    }).format(date);
-  };
+    }).format(new Date(dateString));
 
-  // Abrir diálogo de detalles
   const openPaymentDetail = (payment: Payment) => {
-    setSelectedPayment({
-      ...payment,
-      id: payment.id,
-    });
+    setSelectedPayment({ ...payment, id: payment.id });
     setIsDetailOpen(true);
   };
+
+  const getMetodoLabel = (tipo: string, metodo: string) =>
+    GRATIS_TYPES.includes(tipo) ? "Gratis" : capitalizeWords(metodo);
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Gestión de Pagos</h1>
-        {/* <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <Download className="mr-2 h-4 w-4" />
-            Exportar
-          </Button>
-        </div> */}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -234,48 +230,21 @@ export default function PagosPage() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuCheckboxItem
-                        checked={statusFilter.includes("completado")}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setStatusFilter([...statusFilter, "completado"]);
-                          } else {
+                      {["completado", "pendiente", "rechazado"].map((s) => (
+                        <DropdownMenuCheckboxItem
+                          key={s}
+                          checked={statusFilter.includes(s)}
+                          onCheckedChange={(checked) =>
                             setStatusFilter(
-                              statusFilter.filter((s) => s !== "completado")
-                            );
+                              checked
+                                ? [...statusFilter, s]
+                                : statusFilter.filter((v) => v !== s)
+                            )
                           }
-                        }}
-                      >
-                        Completado
-                      </DropdownMenuCheckboxItem>
-                      <DropdownMenuCheckboxItem
-                        checked={statusFilter.includes("pendiente")}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setStatusFilter([...statusFilter, "pendiente"]);
-                          } else {
-                            setStatusFilter(
-                              statusFilter.filter((s) => s !== "pendiente")
-                            );
-                          }
-                        }}
-                      >
-                        Pendiente
-                      </DropdownMenuCheckboxItem>
-                      <DropdownMenuCheckboxItem
-                        checked={statusFilter.includes("rechazado")}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setStatusFilter([...statusFilter, "rechazado"]);
-                          } else {
-                            setStatusFilter(
-                              statusFilter.filter((s) => s !== "rechazado")
-                            );
-                          }
-                        }}
-                      >
-                        Rechazado
-                      </DropdownMenuCheckboxItem>
+                        >
+                          {capitalizeWords(s)}
+                        </DropdownMenuCheckboxItem>
+                      ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
 
@@ -291,6 +260,7 @@ export default function PagosPage() {
                         Transferencia
                       </SelectItem>
                       <SelectItem value="Efectivo">Efectivo</SelectItem>
+                      <SelectItem value="Gratis">Gratis</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -307,6 +277,7 @@ export default function PagosPage() {
                       <TableHead>Método</TableHead>
                       <TableHead>Estado</TableHead>
                       <TableHead>Fecha</TableHead>
+                      <TableHead>Días</TableHead>
                       <TableHead className="text-right">Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -329,7 +300,10 @@ export default function PagosPage() {
                         </TableCell>
                         <TableCell>S/. {pago.monto}</TableCell>
                         <TableCell>
-                          {capitalizeWords(pago.metodo_pago)}
+                          {getMetodoLabel(
+                            pago.tipo_participante,
+                            pago.metodo_pago
+                          )}
                         </TableCell>
                         <TableCell>
                           <Badge
@@ -361,6 +335,7 @@ export default function PagosPage() {
                           </Badge>
                         </TableCell>
                         <TableCell>{formatDate(pago.fecha_registro)}</TableCell>
+                        <TableCell>{pago.dias}</TableCell>
                         <TableCell className="text-right">
                           <Button
                             variant="ghost"
@@ -375,7 +350,7 @@ export default function PagosPage() {
                     ))}
                     {filteredPayments.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={8} className="h-24 text-center">
+                        <TableCell colSpan={9} className="h-24 text-center">
                           No se encontraron pagos con los filtros seleccionados.
                         </TableCell>
                       </TableRow>
@@ -388,7 +363,6 @@ export default function PagosPage() {
         </CardContent>
       </Card>
 
-      {/* Diálogo de detalles de pago */}
       {selectedPayment && (
         <PaymentDetailDialog
           payment={selectedPayment}
@@ -401,21 +375,23 @@ export default function PagosPage() {
   );
 }
 
-// Helper functions
 const formatTipoParticipante = (tipo: string) => {
   const labels: { [key: string]: string } = {
     EMPRESAS: "Empresas",
     INSTITUCIONES: "Instituciones",
     PROFESIONALES_ESTUDIANTES: "Profesionales - Estudiantes",
     PUBLICO_EN_GENERAL: "Público en General",
+    AUSPICIADOR: "Auspiciador",
+    AUTORIDAD: "Autoridad",
+    MEDIA_PARTNER: "Media Partner",
+    ALUMNO_UNIVERSITARIO: "Alumno Universitario",
   };
   return labels[tipo] || tipo;
 };
 
-const capitalizeWords = (str: string) => {
-  return str
+const capitalizeWords = (str: string) =>
+  str
     .toLowerCase()
     .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
-};

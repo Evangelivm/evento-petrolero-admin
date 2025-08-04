@@ -180,6 +180,10 @@ export default function InscripcionesPage() {
         INSTITUCIONES: "Instituciones",
         PROFESIONALES_ESTUDIANTES: "Profesionales - Estudiantes",
         PUBLICO_EN_GENERAL: "Público en General",
+        AUSPICIADOR: "Auspiciador",
+        AUTORIDAD: "Autoridad",
+        MEDIA_PARTNER: "Media Partner",
+        ALUMNO_UNIVERSITARIO: "Alumno Universitario",
       };
       doc.text(
         tipoLabels[inscripcion.tipo_participante] ||
@@ -505,6 +509,10 @@ export default function InscripcionesPage() {
       INSTITUCIONES: "Instituciones",
       PROFESIONALES_ESTUDIANTES: "Profesionales - Estudiantes",
       PUBLICO_EN_GENERAL: "Público en General",
+      AUSPICIADOR: "Auspiciador",
+      AUTORIDAD: "Autoridad",
+      MEDIA_PARTNER: "Media Partner",
+      ALUMNO_UNIVERSITARIO: "Alumno Universitario",
     };
     return labels[tipo] || tipo;
   };
@@ -646,6 +654,12 @@ export default function InscripcionesPage() {
                     </SelectItem>
                     <SelectItem value="PUBLICO_EN_GENERAL">
                       Público en General
+                    </SelectItem>
+                    <SelectItem value="AUSPICIADOR">Auspiciador</SelectItem>
+                    <SelectItem value="AUTORIDAD">Autoridad</SelectItem>
+                    <SelectItem value="MEDIA_PARTNER">Media Partner</SelectItem>
+                    <SelectItem value="ALUMNO_UNIVERSITARIO">
+                      Alumno Universitario
                     </SelectItem>
                   </SelectContent>
                 </Select>

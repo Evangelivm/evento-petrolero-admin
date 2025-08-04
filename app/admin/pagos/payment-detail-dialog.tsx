@@ -37,6 +37,7 @@ interface Payment {
   estado_pago: "CONFIRMADO" | "PENDIENTE" | "RECHAZADO";
   fecha_registro: string;
   comprobante?: string | null;
+  dias?: string | null; // Add the 'dias' field here
 }
 
 import { useRouter } from "next/navigation";
@@ -68,6 +69,7 @@ export function PaymentDetailDialog({
       if (isNaN(date.getTime())) return "Fecha inválida";
 
       return new Intl.DateTimeFormat("es-ES", {
+        weekday: "long", // Add day of the week
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
@@ -178,9 +180,9 @@ export function PaymentDetailDialog({
           </TabsList>
 
           <TabsContent value="detalles" className="space-y-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <h4 className="text-sm font-medium text-gray-500">Estado</h4>
+            <div className="grid grid-cols-6 gap-4">
+              <div className="col-span-2">
+                <h4 className="text-sm font-medium text-gray-500 ">Estado</h4>
                 <Badge
                   variant="secondary"
                   className={
@@ -210,6 +212,10 @@ export function PaymentDetailDialog({
                 </Badge>
               </div>
               <div>
+                <h4 className="text-sm font-medium text-gray-500">Dias</h4>
+                <p>{payment.dias}</p>
+              </div>
+              <div className="col-span-3">
                 <h4 className="text-sm font-medium text-gray-500">Fecha</h4>
                 <p>{formatDate(payment.fecha_registro)}</p>
               </div>
@@ -223,13 +229,13 @@ export function PaymentDetailDialog({
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <p className="text-xs text-gray-500">Nombre / Empresa</p>
-                    <p className="font-medium">
+                    <p className="font-medium break-words">
                       {capitalizeWords(payment.nombre)}
                     </p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Email</p>
-                    <p className="font-medium">{payment.email}</p>
+                    <p className="font-medium break-words">{payment.email}</p>
                   </div>
                 </div>
               </div>
@@ -394,6 +400,10 @@ const formatTipoParticipante = (tipo: string | null) => {
     INSTITUCIONES: "Instituciones",
     PROFESIONALES_ESTUDIANTES: "Profesionales - Estudiantes",
     PUBLICO_EN_GENERAL: "Público en General",
+    AUSPICIADOR: "Auspiciador",
+    AUTORIDAD: "Autoridad",
+    MEDIA_PARTNER: "Media Partner",
+    ALUMNO_UNIVERSITARIO: "Alumno Universitario",
   };
   return labels[tipo] || tipo;
 };

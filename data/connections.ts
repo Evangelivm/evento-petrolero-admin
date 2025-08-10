@@ -25,22 +25,10 @@ export const createParticipant = async (data: {
   }
 };
 
-export const getParticipants = async (page = 1, limit = 10) => {
+export const getParticipants = async () => {
   try {
-    const response = await apiClient.get("/participants", {
-      params: { page, limit },
-    });
-
-    // Acceder a la propiedad participants del response
-    const participants = response.data?.participants || [];
-
-    // Convertir el monto a string en los datos
-    const formattedData = participants.map((item: any) => ({
-      ...item,
-      monto: item.monto?.toString() || "0",
-    }));
-
-    return formattedData;
+    const response = await apiClient.get("/participants");
+    return response.data.participants;
   } catch (error) {
     console.error("Error obteniendo participantes:", error);
     throw error;

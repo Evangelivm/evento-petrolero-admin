@@ -88,3 +88,68 @@
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  @page {
+    size: 80mm 120mm;
+    margin: 0;
+  }
+
+  html,
+  body {
+    width: 80mm;
+    height: 120mm;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  .dialog-content-print-visible {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+    visibility: visible !important;
+  }
+
+  .dialog-content-print-visible * {
+    visibility: visible !important;
+  }
+
+  #printable-content {
+    width: 100% !important;
+    height: 100% !important;
+    padding: 4mm !important;
+    margin: 0 !important;
+    font-size: 10px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+  }
+
+  .print-hidden {
+    display: none !important;
+  }
+
+  /* 🔹 Forzar que el botón de cierre del Dialog desaparezca */
+  .dialog-content-print-visible [aria-label="Close"],
+  .dialog-content-print-visible button {
+    display: none !important;
+  }
+
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}

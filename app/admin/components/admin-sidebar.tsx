@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Users, CreditCard, LogOut, Menu, X, LucideProps } from "lucide-react";
+import {
+  Users,
+  CreditCard,
+  LogOut,
+  Menu,
+  X,
+  LucideProps,
+  CheckSquare,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -33,11 +41,11 @@ export default function AdminSidebar() {
       href: "/admin/pagos",
       icon: CreditCard,
     },
-    // {
-    //   name: "Configuración",
-    //   href: "/admin/configuracion",
-    //   icon: Settings,
-    // },
+    {
+      name: "Asistencia",
+      href: "/admin/asistencia",
+      icon: CheckSquare,
+    },
   ];
 
   return (

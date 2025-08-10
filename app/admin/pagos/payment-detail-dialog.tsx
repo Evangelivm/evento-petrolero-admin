@@ -398,7 +398,8 @@ const formatTipoParticipante = (tipo: string | null) => {
   const labels: { [key: string]: string } = {
     EMPRESAS: "Empresas",
     INSTITUCIONES: "Instituciones",
-    PROFESIONALES_ESTUDIANTES: "Profesionales - Estudiantes",
+    PROFESIONALES: "Profesionales",
+    ESTUDIANTES: "Estudiantes",
     PUBLICO_EN_GENERAL: "Público en General",
     AUSPICIADOR: "Auspiciador",
     AUTORIDAD: "Autoridad",

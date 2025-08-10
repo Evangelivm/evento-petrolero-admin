@@ -38,8 +38,9 @@ export default function AsistenciaPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isThermalPassPreviewOpen, setIsThermalPassPreviewOpen] =
     useState(false);
-  const [selectedParticipant, setSelectedParticipant] =
-    useState<Participant | null>(null);
+  const [selectedParticipant, setSelectedParticipant] = useState<
+    (Participant & { dias: string }) | null
+  >(null);
 
   const capitalizeWords = (str: string) => {
     return str
@@ -192,7 +193,7 @@ export default function AsistenciaPage() {
                           size="sm"
                           onClick={() =>
                             handlePrintPassClick(
-                              participant,
+                              { ...participant, dias: "" },
                               setSelectedParticipant,
                               setIsThermalPassPreviewOpen
                             )
@@ -228,9 +229,9 @@ export default function AsistenciaPage() {
 }
 
 const handlePrintPassClick = (
-  participant: Participant,
+  participant: Participant & { dias: string },
   setSelectedParticipant: React.Dispatch<
-    React.SetStateAction<Participant | null>
+    React.SetStateAction<(Participant & { dias: string }) | null>
   >,
   setIsThermalPassPreviewOpen: React.Dispatch<React.SetStateAction<boolean>>
 ) => {

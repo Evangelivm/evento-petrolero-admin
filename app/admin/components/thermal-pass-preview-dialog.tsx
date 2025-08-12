@@ -41,7 +41,7 @@ export function ThermalPassPreviewDialog({
   const generateQR = async (codigo: string) => {
     try {
       const qrCodeDataURL = await QRCode.toDataURL(codigo, {
-        width: 200,
+        width: 60, // Reducir el tamaño del QR Code
         margin: 1,
         color: { dark: "#000000", light: "#FFFFFF" },
       });
@@ -86,22 +86,19 @@ export function ThermalPassPreviewDialog({
             visibility: hidden;
           }
           #printable-content, #printable-content * {
-            visibility: visible;
-            font-family: monospace; /* Fuente recomendada para térmica */
-            font-size: 10pt;
+            visibility: visible !important;
           }
           #printable-content {
             position: absolute;
-            left: 0;
-            bottom: 60%;
-            width: 80mm; /* ancho típico de rollo térmico */
+            bottom: 15%;
+            right: 25%;
+            width: 90mm;
+            height: 90mm;
+            padding: 0;
+            box-sizing: border-box;
+            transform-origin: top left;
+            transform: rotate(90deg) translate(0%, -100%);
           }
-        }
-
-        /* Estilos para la vista previa */
-        #printable-content.dialog-content-print-visible {
-          font-family: monospace; /* Aplicar la misma fuente para la vista previa */
-          font-size: 10pt;
         }
       `}</style>
 
@@ -120,39 +117,25 @@ export function ThermalPassPreviewDialog({
           {/* Contenido imprimible */}
           <div
             id="printable-content"
-            className="flex-1 bg-white text-black px-4 py-3 text-md flex flex-col items-center justify-between dialog-content-print-visible"
+            className="flex-1 bg-white text-black px-2 py-1 text-md flex flex-col items-start justify-start"
           >
             {participant ? (
-              <>
+              <div className="w-full flex flex-col items-start">
                 {/* Encabezado del evento */}
-                <div className="text-center">
+                <div className="text-left mb-1">
                   <p className="text-lg font-bold leading-tight">
-                    Invitado Especial
+                    Pase para Comida
                   </p>
                 </div>
-                <div className="text-center">
-                  <div className="border-t border-gray-400 w-24 mx-auto my-2" />
-                </div>
-                {/* Encabezado del evento */}
-                <div className="text-center mb-3">
-                  <p className="text-lg font-bold leading-tight">
-                    Congreso Internacional:
-                    <br />
-                    Reactivación Petrolera en las
-                    <br />
-                    Regiones Piura y Tumbes
-                  </p>
-                </div>
-
                 {/* Datos del participante */}
-                <div className="w-full space-y-[2px] text-md mb-4">
+                <div className="w-full space-y-0.5 text-xs mb-1">
                   <p>
                     <span className="font-semibold">Código:</span>{" "}
                     {participant.codigo}
                   </p>
                   <p className="break-words">
                     <span className="font-semibold">Nombre:</span>{" "}
-                    {capitalizeWords(participant.nombre)} 
+                    {formatTipoParticipante(participant.nombre)}
                   </p>
                   <p>
                     <span className="font-semibold">Tipo:</span>{" "}
@@ -164,28 +147,24 @@ export function ThermalPassPreviewDialog({
                   </p>
                   <p>
                     <span className="font-semibold">Días:</span>{" "}
-                    {capitalizeWords(participant.dias)}
+                    {participant.dias}
                   </p>
                 </div>
 
                 {/* QR centrado */}
                 {qrUrl && (
-                  <div className="my-2 flex justify-center">
-                    <img src={qrUrl} alt="QR Code" className="w-40 h-40" />
+                  <div className="my-1 flex justify-start">
+                    <img
+                      src={qrUrl}
+                      alt="QR Code"
+                      className="w-32 h-32" // Tamaño reducido del QR Code
+                    />
                   </div>
                 )}
 
                 {/* Pie del pase */}
-                <div className="text-center mt-3">
-                  <div className="border-t border-gray-400 w-24 mx-auto my-2" />
-                  <p>Presente este pase para su ingreso</p>
-                  <p className="mt-1">{new Date().toLocaleDateString()}</p>
-                  <div className="border-t border-gray-400 w-24 mx-auto my-2" />
-                  <p>
-                    <b className="text-lg">Guardar en un lugar seguro</b>
-                  </p>
-                </div>
-              </>
+                <div className="text-left mt-1 text-xs"></div>
+              </div>
             ) : (
               <p className="text-gray-500">No hay datos para mostrar.</p>
             )}

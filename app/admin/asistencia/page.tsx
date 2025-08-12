@@ -30,6 +30,7 @@ interface Participant {
   tipo_participante: string;
   estado_pago: string;
   asistio: string;
+  dias: string; // Add dias as an optional property
 }
 
 export default function AsistenciaPage() {
@@ -191,13 +192,17 @@ export default function AsistenciaPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() =>
+                          onClick={() => {
+                            const participantForPrint = {
+                              ...participant,
+                              dias: participant.dias || "", // Ensure 'dias' is always a string
+                            } as Participant & { dias: string };
                             handlePrintPassClick(
-                              { ...participant, dias: "" },
+                              participantForPrint,
                               setSelectedParticipant,
                               setIsThermalPassPreviewOpen
-                            )
-                          }
+                            );
+                          }}
                           disabled={participant.asistio === "NO"}
                         >
                           <Printer className="mr-2 h-4 w-4" />
